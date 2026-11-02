@@ -50,9 +50,12 @@ const isActive = (path: string) => {
   >
     <a
       href={getRelativeLocaleUrl(locale, "")}
-      class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none"
+      class="absolute py-1 leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:leading-none inline-flex items-baseline gap-2"
     >
-      {site.title}
+      <span class="text-xl font-bold sm:text-2xl">{site.title}</span>
+      <span class="text-sm sm:text-base font-medium text-accent tracking-wider font-serif not-italic">
+        · 大漠长风 <span class="text-xs sm:text-sm font-sans opacity-70">(liweifeng)</span>
+      </span>
     </a>
     <nav
       id="nav-menu"
