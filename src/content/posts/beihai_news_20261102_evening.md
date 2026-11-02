@@ -1,6 +1,6 @@
 ---
 author: Weifeng
-pubDatetime: 2026-11-02T22:30:00Z
+pubDatetime: 2026-11-01T12:00:00Z
 title: 广西北海市新闻简报 · 晚间增补版 (2026年11月2日)
 featured: false
 draft: false
