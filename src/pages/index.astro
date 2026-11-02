@@ -55,13 +55,16 @@ const homePath = getRelativeLocaleUrl(locale, "");
       <p>
 专注汇聚广西北海市每日政务要闻、产业经济、文旅动态与民生资讯。每日早晚更新，客观记录城市发展脉搏。
 </p>
-<div class="my-6 overflow-hidden rounded-xl shadow-md">
-        <img
-          src="/images/beihai.webp"
-          alt=""
-          class="w-full h-auto object-contain"
-        />
-      </div>
+<div class="relative my-6 overflow-hidden rounded-xl shadow-md">
+  <img
+    src="/images/beihai.webp"
+    alt=""
+    class="w-full h-auto object-contain block"
+  />
+  <div class="absolute bottom-3 right-3 rounded-md bg-black/50 px-2.5 py-1 text-xs text-white backdrop-blur-sm tracking-wide shadow-sm select-none">
+    © 大漠长风 (liweifeng) · 北海快讯
+  </div>
+</div>
       {
         socials.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
