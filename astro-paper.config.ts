@@ -8,7 +8,7 @@ site: {
     author: "Weifeng",
     profile: "https://news.13141975.xyz/",
     ogImage: "default-og.jpg",
-    lang: "zh",
+    lang: "en",
     timezone: "Asia/Shanghai",
     dir: "ltr",
   },
