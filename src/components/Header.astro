@@ -52,7 +52,9 @@ const isActive = (path: string) => {
       href={getRelativeLocaleUrl(locale, "")}
       class="absolute py-1 leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:leading-none inline-flex items-baseline gap-2"
     >
-      <span class="text-xl font-bold sm:text-2xl">{site.title}</span>
+      <<span class="text-2xl sm:text-3xl font-normal tracking-wide text-sky-900 dark:text-sky-300 font-calligraphy" style="font-family: 'Kaiti', 'STKaiti', 'Zhi Mang Xing', 'Ma Shan Zheng', cursive, serif;">
+        {site.title}
+      </span>>
       <span class="text-base sm:text-lg font-medium font-serif not-italic tracking-wider text-teal-600 dark:text-teal-400 ms-1">
         · 大漠长风 <span class="text-sm sm:text-base font-sans opacity-80">(liweifeng)</span>
       </span>
@@ -227,3 +229,10 @@ const isActive = (path: string) => {
   handleSkipToContent();
   document.addEventListener("astro:after-swap", handleSkipToContent);
 </script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&family=Ma+Shan+Zheng&display=swap" />
+
+<style>
+  .font-calligraphy {
+    font-family: 'Zhi Mang Xing', 'Ma Shan Zheng', 'STKaiti', 'Kaiti', cursive, serif !important;
+  }
+</style>
