@@ -119,5 +119,137 @@ const rssHref = getAssetPath("rss.xml");
     <script>
       import "@/scripts/theme";
     </script>
+<!-- 全屏北海潮汐漫涌与泡沫动态背景（纯前端渲染，不占服务器资源） -->
+<canvas id="ocean-tide-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1;"></canvas>
+
+<script>
+  (function initTideEffect() {
+    function setup() {
+      const canvas = document.getElementById("ocean-tide-canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      let w = (canvas.width = window.innerWidth);
+      let h = (canvas.height = window.innerHeight);
+
+      window.addEventListener("resize", () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+
+      // 浪沫气泡粒子系统
+      const maxFoam = 90;
+      const foams = [];
+      for (let i = 0; i < maxFoam; i++) {
+        foams.push({
+          x: Math.random() * w,
+          relY: (Math.random() - 0.5) * 45,
+          r: Math.random() * 3.5 + 1.2,
+          alpha: Math.random() * 0.6 + 0.3,
+          speedX: (Math.random() - 0.5) * 0.6,
+          life: Math.random() * 80 + 40,
+          maxLife: 100
+        });
+      }
+
+      let t = 0;
+
+      function render() {
+        ctx.clearRect(0, 0, w, h);
+
+        t += 0.014;
+
+        // 潮汐高低长周期计算（模拟涨至上半屏 80% 区域，再缓缓退去）
+        const tideProgress = (Math.sin(t * 0.38) + 1) / 2; // 0 ~ 1
+        const maxSurgeH = h * 0.82;
+        const minSurgeH = h * 0.12;
+        const currentWaterH = minSurgeH + tideProgress * (maxSurgeH - minSurgeH);
+        const baseY = h - currentWaterH;
+
+        // 1. 绘制底层海潮漫涌薄水膜
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+
+        const step = 20;
+        const points = [];
+        for (let x = 0; x <= w + step; x += step) {
+          const wave1 = Math.sin(x * 0.0035 + t * 1.2) * 22;
+          const wave2 = Math.cos(x * 0.007 - t * 0.8) * 12;
+          const wave3 = Math.sin(x * 0.012 + t * 1.8) * 6;
+          const y = baseY + wave1 + wave2 + wave3;
+          points.push({ x, y });
+        }
+
+        ctx.lineTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length - 1; i++) {
+          const xc = (points[i].x + points[i + 1].x) / 2;
+          const yc = (points[i].y + points[i + 1].y) / 2;
+          ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+        }
+        ctx.lineTo(w, h);
+        ctx.closePath();
+
+        // 柔和水感天蓝渐变
+        const grad = ctx.createLinearGradient(0, baseY, 0, h);
+        grad.addColorStop(0, "rgba(56, 189, 248, 0.18)");
+        grad.addColorStop(0.25, "rgba(14, 165, 233, 0.12)");
+        grad.addColorStop(0.7, "rgba(2, 132, 199, 0.08)");
+        grad.addColorStop(1, "rgba(186, 230, 253, 0.04)");
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // 2. 浪尖边缘水膜高光线
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
+        ctx.lineWidth = 1.8;
+        ctx.shadowColor = "rgba(186, 230, 253, 0.75)";
+        ctx.shadowBlur = 8;
+        ctx.stroke();
+        ctx.restore();
+
+        // 3. 伴随浪头的海沫与呼吸微泡
+        for (let i = 0; i < foams.length; i++) {
+          const f = foams[i];
+          const waveOffset = Math.sin(f.x * 0.0035 + t * 1.2) * 22;
+          const foamY = baseY + waveOffset + f.relY;
+
+          f.x += f.speedX;
+          if (f.x < 0) f.x = w;
+          if (f.x > w) f.x = 0;
+
+          f.life -= 0.5;
+          if (f.life <= 0) {
+            f.life = f.maxLife;
+            f.x = Math.random() * w;
+            f.relY = (Math.random() - 0.5) * 40;
+          }
+
+          const currentAlpha = f.alpha * (f.life / f.maxLife);
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(f.x, foamY, f.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
+          ctx.shadowColor = "rgba(224, 242, 254, 0.9)";
+          ctx.shadowBlur = 4;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      render();
+    }
+
+    // 兼容 Astro 视图切换与初次加载
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setup);
+    } else {
+      setup();
+    }
+    document.addEventListener("astro:page-load", setup);
+  })();
+</script>
   </body>
 </html>
