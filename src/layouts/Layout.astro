@@ -161,10 +161,10 @@ const rssHref = getAssetPath("rss.xml");
 
       function render() {
         ctx.clearRect(0, 0, w, h);
-        t += 0.015;
+        t += 0.005;
 
         // 潮汐高低长周期计算（大幅漫涌至屏幕 80% 区域，再缓缓退去）
-        const tideProgress = (Math.sin(t * 0.4) + 1) / 2;
+        const tideProgress = (Math.sin(t * 0.2) + 1) / 2;
         const maxSurgeH = h * 0.82;
         const minSurgeH = h * 0.15;
         const currentWaterH = minSurgeH + tideProgress * (maxSurgeH - minSurgeH);
