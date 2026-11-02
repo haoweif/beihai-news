@@ -119,12 +119,16 @@ const rssHref = getAssetPath("rss.xml");
     <script>
       import "@/scripts/theme";
     </script>
-<!-- 全屏北海潮汐漫涌与泡沫动态背景（纯前端渲染，不占服务器资源） -->
-<canvas id="ocean-tide-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1;"></canvas>
+<!-- 全屏北海潮汐漫涌与泡沫动态背景 -->
+<canvas 
+  id="ocean-tide-canvas" 
+  class="pointer-events-none fixed inset-0 z-0 h-full w-full"
+  style="pointer-events: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10;"
+></canvas>
 
-<script>
+<script is:inline>
   (function initTideEffect() {
-    function setup() {
+    function startWave() {
       const canvas = document.getElementById("ocean-tide-canvas");
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
@@ -138,15 +142,15 @@ const rssHref = getAssetPath("rss.xml");
         h = canvas.height = window.innerHeight;
       });
 
-      // 浪沫气泡粒子系统
-      const maxFoam = 90;
+      // 浪沫气泡粒子
+      const maxFoam = 80;
       const foams = [];
       for (let i = 0; i < maxFoam; i++) {
         foams.push({
           x: Math.random() * w,
-          relY: (Math.random() - 0.5) * 45,
-          r: Math.random() * 3.5 + 1.2,
-          alpha: Math.random() * 0.6 + 0.3,
+          relY: (Math.random() - 0.5) * 50,
+          r: Math.random() * 3 + 1,
+          alpha: Math.random() * 0.7 + 0.3,
           speedX: (Math.random() - 0.5) * 0.6,
           life: Math.random() * 80 + 40,
           maxLife: 100
@@ -157,17 +161,16 @@ const rssHref = getAssetPath("rss.xml");
 
       function render() {
         ctx.clearRect(0, 0, w, h);
+        t += 0.015;
 
-        t += 0.014;
-
-        // 潮汐高低长周期计算（模拟涨至上半屏 80% 区域，再缓缓退去）
-        const tideProgress = (Math.sin(t * 0.38) + 1) / 2; // 0 ~ 1
+        // 潮汐高低长周期计算（大幅漫涌至屏幕 80% 区域，再缓缓退去）
+        const tideProgress = (Math.sin(t * 0.4) + 1) / 2;
         const maxSurgeH = h * 0.82;
-        const minSurgeH = h * 0.12;
+        const minSurgeH = h * 0.15;
         const currentWaterH = minSurgeH + tideProgress * (maxSurgeH - minSurgeH);
         const baseY = h - currentWaterH;
 
-        // 1. 绘制底层海潮漫涌薄水膜
+        // 1. 绘制漫涌薄水膜
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(0, h);
@@ -178,8 +181,7 @@ const rssHref = getAssetPath("rss.xml");
           const wave1 = Math.sin(x * 0.0035 + t * 1.2) * 22;
           const wave2 = Math.cos(x * 0.007 - t * 0.8) * 12;
           const wave3 = Math.sin(x * 0.012 + t * 1.8) * 6;
-          const y = baseY + wave1 + wave2 + wave3;
-          points.push({ x, y });
+          points.push({ x, y: baseY + wave1 + wave2 + wave3 });
         }
 
         ctx.lineTo(points[0].x, points[0].y);
@@ -191,24 +193,24 @@ const rssHref = getAssetPath("rss.xml");
         ctx.lineTo(w, h);
         ctx.closePath();
 
-        // 柔和水感天蓝渐变
+        // 更加清晰可辨的天蓝海波渐变
         const grad = ctx.createLinearGradient(0, baseY, 0, h);
-        grad.addColorStop(0, "rgba(56, 189, 248, 0.18)");
-        grad.addColorStop(0.25, "rgba(14, 165, 233, 0.12)");
-        grad.addColorStop(0.7, "rgba(2, 132, 199, 0.08)");
-        grad.addColorStop(1, "rgba(186, 230, 253, 0.04)");
+        grad.addColorStop(0, "rgba(56, 189, 248, 0.35)");
+        grad.addColorStop(0.2, "rgba(14, 165, 233, 0.22)");
+        grad.addColorStop(0.6, "rgba(2, 132, 199, 0.12)");
+        grad.addColorStop(1, "rgba(186, 230, 253, 0.06)");
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // 2. 浪尖边缘水膜高光线
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
-        ctx.lineWidth = 1.8;
-        ctx.shadowColor = "rgba(186, 230, 253, 0.75)";
-        ctx.shadowBlur = 8;
+        // 2. 浪尖边缘高光水线
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.lineWidth = 2.2;
+        ctx.shadowColor = "rgba(56, 189, 248, 0.9)";
+        ctx.shadowBlur = 10;
         ctx.stroke();
         ctx.restore();
 
-        // 3. 伴随浪头的海沫与呼吸微泡
+        // 3. 伴随浪头的海沫与微泡
         for (let i = 0; i < foams.length; i++) {
           const f = foams[i];
           const waveOffset = Math.sin(f.x * 0.0035 + t * 1.2) * 22;
@@ -230,8 +232,8 @@ const rssHref = getAssetPath("rss.xml");
           ctx.beginPath();
           ctx.arc(f.x, foamY, f.r, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
-          ctx.shadowColor = "rgba(224, 242, 254, 0.9)";
-          ctx.shadowBlur = 4;
+          ctx.shadowColor = "rgba(56, 189, 248, 0.9)";
+          ctx.shadowBlur = 5;
           ctx.fill();
           ctx.restore();
         }
@@ -242,13 +244,12 @@ const rssHref = getAssetPath("rss.xml");
       render();
     }
 
-    // 兼容 Astro 视图切换与初次加载
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setup);
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      startWave();
     } else {
-      setup();
+      document.addEventListener("DOMContentLoaded", startWave);
     }
-    document.addEventListener("astro:page-load", setup);
+    document.addEventListener("astro:page-load", startWave);
   })();
 </script>
   </body>
