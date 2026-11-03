@@ -20,8 +20,8 @@ const t = useTranslations(locale);
 
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const featuredPosts = sortedPosts.slice(0, 1);
+const recentPosts = sortedPosts.slice(1);
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
 
