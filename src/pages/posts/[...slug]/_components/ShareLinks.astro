@@ -32,7 +32,7 @@ const items = await Promise.all(
 {
   items.some(({ Icon }) => Icon) && (
     <div class="flex flex-none flex-col items-center justify-center gap-1 md:items-start">
-      <span class="italic">{t.post.sharePostIntro}</span>
+     <span class="font-medium">分享：</span>
       <div class="text-center">
         {items.map(({ url, title, Icon }) =>
           Icon ? (
@@ -52,3 +52,24 @@ const items = await Promise.all(
     </div>
   )
 }
+<script>
+  document.querySelectorAll('a[aria-label*="wechat" i], a[title*="wechat" i], a[title*="微信" i]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const shareData = {
+        title: document.title,
+        text: '广西北海市新闻简报',
+        url: window.location.href,
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {}
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('链接已复制！去微信粘贴即可分享。');
+      }
+    });
+  });
+</script>
