@@ -15,23 +15,6 @@ description: "2026年11月1日—11月7日广西北海市政务要闻、经济�
 > 采集周期：2026年11月1日—11月7日｜共50条
 > 信息来源：北海市融媒体中心（北海日报、北海新闻网）、北海市人民政府门户网、合浦县／海城区人民政府网、人民网广西频道、广西壮族自治区人民政府网、广西新闻网、北海市中级人民法院、北海市气象局等
 
-<div class="my-6 flex flex-wrap items-center justify-center gap-3 text-sm font-medium">
-<span class="text-muted-foreground">快捷直达：</span>
-<a href="#一政务要闻" class="text-accent underline-offset-4 hover:underline">一、政务要闻</a>
-<span class="opacity-30">|</span>
-<a href="#二经济与产业动态" class="text-accent underline-offset-4 hover:underline">二、经济产业</a>
-<span class="opacity-30">|</span>
-<a href="#三文旅消费与海洋特色" class="text-accent underline-offset-4 hover:underline">三、文旅消费</a>
-<span class="opacity-30">|</span>
-<a href="#四城市建设与生态环保" class="text-accent underline-offset-4 hover:underline">四、城建环保</a>
-<span class="opacity-30">|</span>
-<a href="#五民生法治与社会治理" class="text-accent underline-offset-4 hover:underline">五、民生法治</a>
-<span class="opacity-30">|</span>
-<a href="#六县区动态" class="text-accent underline-offset-4 hover:underline">六、县区动态</a>
-<span class="opacity-30">|</span>
-<a href="#附天气与出行提示" class="text-accent underline-offset-4 hover:underline">☀️ 天气提示</a>
-</div>
----
 
 ## 一、政务要闻
 
